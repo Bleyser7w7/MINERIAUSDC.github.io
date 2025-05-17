@@ -3,18 +3,74 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
+const { google } = require('googleapis');
+const fs = require('fs');
+require('dotenv').config();
 
 const app = express();
+
+// Configuración de Google Drive
+const oauth2Client = new google.auth.OAuth2(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    process.env.GOOGLE_REDIRECT_URI
+);
+
+const drive = google.drive({ version: 'v3', auth: oauth2Client });
+
+// Función para hacer backup a Google Drive
+async function backupToDrive() {
+    try {
+        // Obtener todos los usuarios
+        const users = await User.find({});
+        const backupData = JSON.stringify(users, null, 2);
+        
+        // Crear archivo temporal
+        const tempFile = 'backup.json';
+        fs.writeFileSync(tempFile, backupData);
+
+        // Subir a Google Drive
+        const fileMetadata = {
+            name: `backup_${new Date().toISOString()}.json`,
+            parents: [process.env.GOOGLE_DRIVE_FOLDER_ID]
+        };
+
+        const media = {
+            mimeType: 'application/json',
+            body: fs.createReadStream(tempFile)
+        };
+
+        const response = await drive.files.create({
+            resource: fileMetadata,
+            media: media,
+            fields: 'id'
+        });
+
+        // Eliminar archivo temporal
+        fs.unlinkSync(tempFile);
+
+        console.log('Backup completado:', response.data.id);
+        return response.data.id;
+    } catch (error) {
+        console.error('Error en backup:', error);
+        throw error;
+    }
+}
+
+// Programar backup diario
+setInterval(backupToDrive, 24 * 60 * 60 * 1000);
 
 // Middleware
 app.use(express.json());
 app.use(cors());
 
 // Conexión a MongoDB
-mongoose.connect('mongodb://localhost/tetris_game', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-});
+mongoose.connect(process.env.MONGODB_URI)
+    .then(() => console.log('✅ Conectado a MongoDB Atlas'))
+    .catch(err => {
+        console.error('❌ Error conectando a MongoDB:', err);
+        process.exit(1);
+    });
 
 // Modelo de Usuario
 const UserSchema = new mongoose.Schema({
@@ -31,6 +87,11 @@ const UserSchema = new mongoose.Schema({
 });
 
 const User = mongoose.model('User', UserSchema);
+
+// Ruta de prueba
+app.get('/', (req, res) => {
+    res.json({ message: 'API de Tetris Game funcionando correctamente' });
+});
 
 // Ruta de registro
 app.post('/register', async (req, res) => {
@@ -65,7 +126,7 @@ app.post('/register', async (req, res) => {
         // Generar token JWT
         const token = jwt.sign(
             { userId: user._id },
-            'tu_clave_secreta',
+            process.env.JWT_SECRET,
             { expiresIn: '24h' }
         );
 
@@ -106,7 +167,7 @@ app.post('/login', async (req, res) => {
         // Generar token
         const token = jwt.sign(
             { userId: user._id },
-            'tu_clave_secreta',
+            process.env.JWT_SECRET,
             { expiresIn: '24h' }
         );
 
@@ -130,7 +191,7 @@ app.post('/login', async (req, res) => {
 const auth = async (req, res, next) => {
     try {
         const token = req.header('Authorization').replace('Bearer ', '');
-        const decoded = jwt.verify(token, 'tu_clave_secreta');
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const user = await User.findOne({ _id: decoded.userId });
 
         if (!user) {
@@ -157,7 +218,17 @@ app.get('/profile', auth, async (req, res) => {
     });
 });
 
+// Ruta para forzar un backup
+app.post('/backup', auth, async (req, res) => {
+    try {
+        const backupId = await backupToDrive();
+        res.json({ message: 'Backup completado', backupId });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al realizar backup' });
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Servidor corriendo en puerto ${PORT}`);
+    console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
 }); 
