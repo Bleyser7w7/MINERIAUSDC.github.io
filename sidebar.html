@@ -1,0 +1,180 @@
+<!-- Barra lateral -->
+<div class="sidebar">
+    <div class="close-button">
+        <i class="fas fa-times"></i>
+    </div>
+    <div class="profile-card">
+        <img src="profile.jpg" alt="Profile" class="profile-avatar">
+        <h2 class="profile-name">skharcz</h2>
+        <div class="balance-info">
+            <i class="fas fa-wallet"></i>
+            Balance: <span class="balance-amount">0.00000000</span>
+            <span class="currency">USDC</span>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <a href="index.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Inicio</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
+        <a href="store.html" class="nav-item">
+            <i class="fas fa-store"></i>
+            <span>Store</span>
+        </a>
+        <a href="tasks.html" class="nav-item">
+            <i class="fas fa-tasks"></i>
+            <span>Tasks</span>
+        </a>
+        <a href="games.html" class="nav-item">
+            <i class="fas fa-gamepad"></i>
+            <span>Jugar y Ganar</span>
+        </a>
+        <a href="referidos.html" class="nav-item">
+            <i class="fas fa-users"></i>
+            <span>Referidos</span>
+        </a>
+    </nav>
+</div>
+
+<style>
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100vh;
+    background-color: #1a1b2e;
+    color: #e0e0e0;
+    padding: 0;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #e0e0e0;
+    cursor: pointer;
+    font-size: 20px;
+    display: none;
+}
+
+.profile-card {
+    background-color: #14152380;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 2px solid #ff5733;
+    margin-bottom: 10px;
+}
+
+.profile-name {
+    color: #ff5733;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.balance-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-size: 0.9em;
+}
+
+.balance-amount {
+    font-family: monospace;
+}
+
+.currency {
+    color: #888;
+}
+
+.sidebar-nav {
+    padding: 0 10px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    color: #e0e0e0;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    transition: background-color 0.2s;
+}
+
+.nav-item:hover {
+    background-color: #ffffff10;
+}
+
+.nav-item.active {
+    background-color: #ff5733;
+}
+
+.nav-item i {
+    width: 20px;
+    margin-right: 10px;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    
+    .sidebar.active {
+        transform: translateX(0);
+    }
+    
+    .close-button {
+        display: block;
+    }
+}
+</style>
+
+<script>
+// Obtener el balance del localStorage
+function updateBalance() {
+    const balance = localStorage.getItem('userBalance') || '0.00000000';
+    document.querySelector('.balance-amount').textContent = balance;
+}
+
+// Marcar el ítem activo del menú basado en la URL actual
+function setActiveMenuItem() {
+    const currentPath = window.location.pathname;
+    const navItems = document.querySelectorAll('.nav-item');
+    
+    navItems.forEach(item => {
+        if (item.getAttribute('href') === currentPath.split('/').pop()) {
+            item.classList.add('active');
+        }
+    });
+}
+
+// Actualizar el balance cuando se carga la página
+document.addEventListener('DOMContentLoaded', () => {
+    updateBalance();
+    setActiveMenuItem();
+});
+
+// Actualizar el balance cuando cambie en el localStorage
+window.addEventListener('storage', (e) => {
+    if (e.key === 'userBalance') {
+        updateBalance();
+    }
+});
+</script> 

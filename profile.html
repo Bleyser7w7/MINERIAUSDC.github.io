@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CATSS - Perfil</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <button id="sidebarToggle" class="sidebar-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="sidebar">
+        <div class="profile">
+            <img id="sidebarProfileImage" src="default-avatar.png" alt="Profile">
+            <h3 id="sidebarUsername">Usuario</h3>
+            <p>
+                <i class="fas fa-wallet"></i> Balance: 
+                <span id="balance">0.00000000</span> USDC
+            </p>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a href="profile.html"><i class="fas fa-user"></i> Perfil</a></li>
+                <li><a href="store.html"><i class="fas fa-store"></i> Store</a></li>
+                <li><a href="tasks.html"><i class="fas fa-tasks"></i> Tasks</a></li>
+                <li><a href="games.html"><i class="fas fa-gamepad"></i> Jugar y Ganar</a></li>
+                <li><a href="referidos.html"><i class="fas fa-users"></i> Referidos</a></li>
+                <li><a href="historial.html"><i class="fas fa-history"></i> Historial de transacciones</a></li>
+                <li><a href="withdrawal.html"><i class="fas fa-money-bill-wave"></i> Retirar fondos</a></li>
+                <li><a href="cerrar.html" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="profile-container">
+        <div class="profile-header">
+            <div class="profile-image-section">
+                <img id="profileImage" src="default-avatar.png" alt="Profile">
+                <button id="changeImageBtn" class="change-image-btn">
+                    <i class="fas fa-camera"></i> Cambiar imagen
+                </button>
+            </div>
+            <div class="profile-info">
+                <h2 id="profileUsername">Nombre de Usuario</h2>
+                <p class="member-since">Miembro desde: <span id="memberSince">Fecha</span></p>
+            </div>
+        </div>
+
+        <div class="profile-content">
+            <div class="profile-section">
+                <h3><i class="fas fa-user"></i> Información Personal</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Nombre de usuario</label>
+                        <input type="text" id="username" readonly>
+                    </div>
+                    <div class="info-item">
+                        <label>Correo electrónico</label>
+                        <input type="email" id="email" readonly>
+                    </div>
+                    <div class="info-item">
+                        <label>Fecha de nacimiento</label>
+                        <input type="date" id="birthdate">
+                    </div>
+                    <div class="info-item">
+                        <label>País</label>
+                        <input type="text" id="country" placeholder="Agregar país">
+                    </div>
+                    <div class="info-item">
+                        <label>Ciudad</label>
+                        <input type="text" id="city" placeholder="Agregar ciudad">
+                    </div>
+                </div>
+                <button id="saveProfileBtn" class="save-profile-btn">
+                    <i class="fas fa-save"></i> Guardar cambios
+                </button>
+            </div>
+
+            <div class="profile-section">
+                <h3><i class="fas fa-chart-line"></i> Estadísticas de Minería</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <i class="fas fa-coins"></i>
+                        <div class="stat-info">
+                            <label>Total minado</label>
+                            <span id="totalMined">0.00000000 USDC</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-fire"></i>
+                        <div class="stat-info">
+                            <label>Racha actual</label>
+                            <span id="miningStreak">0 días</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-calendar-check"></i>
+                        <div class="stat-info">
+                            <label>Última minería</label>
+                            <span id="lastMining">Nunca</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <h3><i class="fas fa-shield-alt"></i> Seguridad</h3>
+                <div class="security-options">
+                    <button class="security-btn" id="changePasswordBtn">
+                        <i class="fas fa-key"></i> Cambiar contraseña
+                    </button>
+                    <button class="security-btn" id="enable2FABtn">
+                        <i class="fas fa-lock"></i> Activar autenticación de dos factores
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notificationContainer"></div>
+
+    <script src="auth.js"></script>
+    <script src="profile.js"></script>
+</body>
+</html> 

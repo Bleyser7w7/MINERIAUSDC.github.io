@@ -1,0 +1,358 @@
+/* Contenedor principal de la ruleta */
+.wheel-container {
+    margin-left: 0;
+    padding: 2rem;
+    transition: margin-left var(--transition-speed) ease-in-out;
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--background-dark), var(--background-light));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.wheel-container.sidebar-active {
+    margin-left: var(--sidebar-width);
+}
+
+.wheel-container h1 {
+    color: var(--text-color);
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 2rem;
+    text-align: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.wheel-container h1 i {
+    color: var(--primary-color);
+}
+
+/* Contenedor principal del juego */
+.game-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Contenedor de la ruleta y premios */
+.wheel-section {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+    width: 100%;
+    justify-content: center;
+}
+
+/* Contenedor de la ruleta */
+.wheel-wrapper {
+    position: relative;
+    width: min(90vh, 600px);
+    aspect-ratio: 1;
+}
+
+/* Ruleta */
+.wheel {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    border-radius: 50%;
+    background: linear-gradient(145deg, var(--background-light), #162447);
+    box-shadow: 0 0 50px rgba(228, 63, 90, 0.3);
+    transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+    transform: rotate(0deg);
+}
+
+.wheel::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid var(--primary-color);
+    box-sizing: border-box;
+    animation: pulseWheel 2s infinite;
+}
+
+@keyframes pulseWheel {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.02); opacity: 0.5; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.wheel-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+/* Segmentos de la ruleta */
+.wheel-segment {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    left: 50%;
+    top: 50%;
+    transform-origin: 0% 0%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-align: center;
+}
+
+.wheel-segment > div {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 15%;
+    transform-origin: center;
+    gap: 5px;
+}
+
+.wheel-segment i {
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.wheel-segment span {
+    font-size: clamp(0.7rem, 1.8vw, 1rem);
+    font-weight: bold;
+    line-height: 1.2;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    white-space: pre-line;
+    text-align: center;
+}
+
+/* Centro y puntero */
+.wheel-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(145deg, var(--primary-color), var(--primary-hover));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    box-shadow: 0 0 20px rgba(228, 63, 90, 0.5);
+    z-index: 2;
+}
+
+.wheel-pointer {
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--primary-color);
+    font-size: 40px;
+    filter: drop-shadow(0 0 10px rgba(228, 63, 90, 0.5));
+    z-index: 3;
+}
+
+/* Panel de premios */
+.prizes-info {
+    background: linear-gradient(145deg, var(--background-light), #162447);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    height: fit-content;
+    position: sticky;
+    top: 2rem;
+    width: 300px;
+}
+
+.prizes-info h2 {
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1.5rem;
+}
+
+.prizes-info h2 i {
+    color: var(--primary-color);
+}
+
+.prizes-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.prize-item {
+    background: var(--background-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    transition: all var(--transition-speed) ease;
+}
+
+.prize-item:hover {
+    transform: translateY(-2px);
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 15px rgba(228, 63, 90, 0.2);
+}
+
+.prize-item i {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+}
+
+.prize-item span {
+    color: var(--text-color);
+    font-size: 0.9rem;
+}
+
+/* Animaciones */
+@keyframes spinWheel {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.wheel.spinning {
+    animation: spinWheel 0.2s linear infinite;
+}
+
+.wheel-center i {
+    transition: transform 0.3s ease;
+}
+
+.wheel.spinning .wheel-center i {
+    animation: spinCenter 1s linear infinite;
+}
+
+@keyframes spinCenter {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Controles de la ruleta */
+.wheel-controls {
+    text-align: center;
+    margin: 2rem 0;
+    width: min(90vh, 600px);
+}
+
+.spins-left {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.spins-left i {
+    color: var(--primary-color);
+}
+
+.spin-button {
+    background: linear-gradient(145deg, var(--primary-color), var(--primary-hover));
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 1rem 2.5rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin: 0 auto;
+    box-shadow: 0 4px 15px rgba(228, 63, 90, 0.3);
+}
+
+.spin-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(228, 63, 90, 0.4);
+}
+
+.spin-button:active {
+    transform: translateY(0);
+}
+
+.spin-button:disabled {
+    background: linear-gradient(145deg, #666, #444);
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .wheel-wrapper {
+        grid-column: 1;
+    }
+
+    .wheel-controls {
+        grid-column: 1;
+    }
+
+    .prizes-info {
+        grid-column: 2;
+    }
+}
+
+@media (max-width: 968px) {
+    .wheel-section {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .wheel-wrapper {
+        width: min(90vh, 600px);
+    }
+
+    .prizes-info {
+        width: 100%;
+        max-width: min(90vh, 600px);
+        position: static;
+        margin-top: 2rem;
+    }
+
+    .wheel-controls {
+        grid-column: 1;
+    }
+}
+
+@media (max-width: 480px) {
+    .wheel-container {
+        padding: 1rem;
+    }
+
+    .wheel-wrapper {
+        width: 98vw;
+    }
+
+    .wheel-segment i {
+        font-size: clamp(0.9rem, 2.2vw, 1.3rem);
+    }
+
+    .wheel-segment span {
+        font-size: clamp(0.6rem, 1.3vw, 0.8rem);
+    }
+
+    .wheel-section {
+        gap: 1rem;
+    }
+} 

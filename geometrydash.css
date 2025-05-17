@@ -1,0 +1,284 @@
+/* Estilos específicos para el juego Geometry Runner */
+
+.game-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #171f2d;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.game-header h1 {
+    color: #7289da;
+    margin: 0;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.game-header h1 i {
+    font-size: 1.8rem;
+    color: #5f73bc;
+}
+
+.game-stats {
+    display: flex;
+    gap: 20px;
+    font-weight: bold;
+    background-color: #1e2738;
+    padding: 10px 15px;
+    border-radius: 10px;
+    flex-wrap: wrap;
+}
+
+.game-score, .game-highscore, .game-speed {
+    color: #ddd;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.game-score span:last-child, 
+.game-highscore span:last-child, 
+.game-speed span:last-child {
+    color: #5cefb5;
+    font-family: 'Consolas', monospace;
+}
+
+.game-area-wrapper {
+    position: relative;
+    width: 100%;
+    height: 420px;
+    background-color: #1e2738;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+#gameCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, #081c35 0%, #122e56 100%);
+}
+
+.game-menu, .game-over {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 10;
+    padding: 20px;
+    box-sizing: border-box;
+    color: white;
+    text-align: center;
+}
+
+.game-over {
+    display: none;
+}
+
+.game-menu h2, .game-over h2 {
+    color: #fe9c4b;
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    text-shadow: 0 0 10px rgba(254, 156, 75, 0.5);
+}
+
+.game-menu p {
+    margin-bottom: 30px;
+    font-size: 1.2rem;
+    color: #ddd;
+}
+
+.start-button, .restart-button {
+    background: linear-gradient(135deg, #5cefb5 0%, #2fa886 100%);
+    color: #0f172a;
+    border: none;
+    padding: 12px 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(92, 239, 181, 0.3);
+}
+
+.start-button:hover, .restart-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(92, 239, 181, 0.4);
+}
+
+.start-button:active, .restart-button:active {
+    transform: translateY(1px);
+}
+
+.game-over-stats {
+    margin: 20px 0;
+    background-color: #1e2738;
+    padding: 15px 25px;
+    border-radius: 10px;
+    min-width: 250px;
+}
+
+.game-over-stats p {
+    font-size: 1.2rem;
+    margin: 8px 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.game-over-stats p span {
+    color: #5cefb5;
+    font-weight: bold;
+}
+
+.reward-info {
+    margin-bottom: 25px;
+    background-color: #24203a;
+    padding: 12px 20px;
+    border-radius: 10px;
+    border-left: 4px solid #fe9c4b;
+}
+
+.reward-info p {
+    font-size: 1.1rem;
+    margin: 0;
+    color: #ddd;
+}
+
+.reward-info span {
+    color: #fe9c4b;
+    font-weight: bold;
+    font-family: 'Consolas', monospace;
+}
+
+.game-controls {
+    margin-top: 20px;
+    text-align: center;
+    color: #a0aec0;
+}
+
+.controls-text {
+    font-size: 1rem;
+}
+
+.control-key {
+    background-color: #1e2738;
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-family: 'Consolas', monospace;
+    font-weight: bold;
+    margin: 0 5px;
+    border: 1px solid #364156;
+    color: #ddd;
+}
+
+/* Animaciones */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.start-button {
+    animation: pulse 2s infinite;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .game-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .game-area-wrapper {
+        height: 350px;
+    }
+    
+    .game-menu h2, .game-over h2 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-container {
+        padding: 15px;
+        margin: 10px;
+    }
+    
+    .game-area-wrapper {
+        height: 280px;
+    }
+    
+    .game-menu h2, .game-over h2 {
+        font-size: 1.8rem;
+    }
+    
+    .game-over-stats, .reward-info {
+        min-width: auto;
+        width: 90%;
+    }
+}
+
+/* Animación para el cubo del jugador */
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(90deg); }
+    50% { transform: rotate(180deg); }
+    75% { transform: rotate(270deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.player-cube {
+    animation: rotate 0.5s linear infinite;
+    transform-origin: center;
+}
+
+/* Efecto de brillo para obstáculos */
+.obstacle {
+    position: relative;
+    overflow: hidden;
+}
+
+.obstacle::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 150%;
+    height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: skewX(-25deg);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    0% { left: -150%; }
+    100% { left: 150%; }
+} 

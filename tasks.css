@@ -1,0 +1,585 @@
+/* Estilos para el contenedor principal */
+.main-content {
+    margin-left: 450px;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    background-color: #f4f6f9;
+}
+
+/* Contenedor de tareas */
+.tasks-container {
+    max-width: 1000px;
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: transparent;
+}
+
+/* Encabezado de tareas */
+.tasks-header {
+    text-align: center;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+.tasks-header h1 {
+    font-size: 32px;
+    color: #222;
+    margin-bottom: 10px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.tasks-header p {
+    color: #444;
+    font-size: 18px;
+}
+
+/* Categorías de tareas */
+.tasks-categories {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto 30px;
+    flex-wrap: wrap;
+    gap: 15px;
+    width: 100%;
+}
+
+.category {
+    padding: 10px 20px;
+    background: rgba(240, 240, 240, 0.2);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    flex: 0 0 auto;
+}
+
+.category.active {
+    background: rgba(33, 150, 243, 0.6);
+    color: white;
+}
+
+/* Grid de tareas */
+.tasks-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    justify-content: center;
+    margin: 0 auto 40px;
+    width: 100%;
+}
+
+/* Tarjetas de tareas */
+.task-card {
+    width: 260px;
+    flex: 0 0 auto;
+    padding: 25px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.task-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Cabecera de la tarjeta */
+.task-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.task-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    font-size: 24px;
+    color: white;
+}
+
+.task-info h3 {
+    margin: 0;
+    color: #333;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.task-reward {
+    color: #2196F3;
+    font-weight: bold;
+    font-size: 16px;
+    margin-top: 5px;
+}
+
+/* Badges en las tarjetas */
+.task-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.badge-daily {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.badge-social {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.badge-weekly {
+    background: #fce4ec;
+    color: #c2185b;
+}
+
+.task-description {
+    color: #666;
+    margin: 15px 0;
+    font-size: 14px;
+}
+
+.task-progress {
+    background: rgba(248, 249, 250, 0.3);
+    border-radius: 10px;
+    height: 8px;
+    margin-top: 15px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* Estilos específicos para tareas */
+.task-video-promo .task-icon {
+    background: linear-gradient(135deg, #ff5252, #ff1744);
+}
+
+.task-video-promo .progress-bar {
+    background: #ff1744;
+}
+
+.task-instagram .task-icon {
+    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+}
+
+.task-instagram .progress-bar {
+    background: #bc1888;
+}
+
+.task-twitter .task-icon {
+    background: linear-gradient(135deg, #1da1f2, #0d8ecf);
+}
+
+.task-twitter .progress-bar {
+    background: #1da1f2;
+}
+
+.task-telegram .task-icon {
+    background: linear-gradient(135deg, #0088cc, #0077b5);
+}
+
+.task-telegram .progress-bar {
+    background: #0088cc;
+}
+
+.task-tiktok .task-icon {
+    background: linear-gradient(135deg, #000000, #25F4EE, #FE2C55);
+}
+
+.task-tiktok .progress-bar {
+    background: #FE2C55;
+}
+
+.task-facebook .task-icon {
+    background: linear-gradient(135deg, #3b5998, #4267B2);
+}
+
+.task-facebook .progress-bar {
+    background: #3b5998;
+}
+
+.task-youtube .task-icon {
+    background: linear-gradient(135deg, #FF0000, #cc0000);
+}
+
+.task-youtube .progress-bar {
+    background: #FF0000;
+}
+
+.task-weekly .task-icon {
+    background: linear-gradient(135deg, #c2185b, #880e4f);
+}
+
+.task-weekly .progress-bar {
+    background: #c2185b;
+}
+
+.task-weekly {
+    border: 2px solid rgba(252, 228, 236, 0.3);
+}
+
+/* Tareas completadas */
+.completed-tasks {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.completed-tasks h2 {
+    color: #222;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.completed-task-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    border-bottom: 1px solid rgba(238, 238, 238, 0.3);
+}
+
+.completed-task-info {
+    display: flex;
+    align-items: center;
+}
+
+.completed-task-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(248, 249, 250, 0.2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    color: #28a745;
+}
+
+.completed-task-reward {
+    color: #28a745;
+    font-weight: bold;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 30px;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+}
+
+.close-modal {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+}
+
+.modal-reward {
+    display: inline-block;
+    background: #e3f2fd;
+    color: #1976d2;
+    padding: 5px 15px;
+    border-radius: 15px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.task-requirements {
+    margin: 20px 0;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.requirement-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    color: #666;
+}
+
+.requirement-item i {
+    margin-right: 10px;
+    color: #2196F3;
+}
+
+.start-task-btn {
+    width: 100%;
+    padding: 15px;
+    background: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.start-task-btn:hover {
+    background: #1976D2;
+}
+
+/* Notificaciones */
+#notificationContainer {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1002;
+}
+
+.notification {
+    background: white;
+    padding: 15px 25px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    animation: slideIn 0.3s ease-out;
+}
+
+.notification.success {
+    border-left: 4px solid #4CAF50;
+}
+
+.notification.error {
+    border-left: 4px solid #f44336;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.fade-out {
+    animation: fadeOut 0.3s ease-out forwards;
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        padding: 20px 10px;
+    }
+    
+    .sidebar.active + .main-content {
+        margin-left: 250px;
+    }
+    
+    .tasks-container {
+        padding: 15px;
+    }
+    
+    .task-card {
+        width: 100%;
+        max-width: 320px;
+    }
+    
+    .category {
+        margin-bottom: 8px;
+        padding: 8px 15px;
+    }
+}
+
+/* Estilos para enlaces de redes sociales */
+.social-link-container {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.social-link-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 25px;
+    background: #1976d2;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    width: 80%;
+    max-width: 300px;
+}
+
+.social-link-button i {
+    margin-right: 10px;
+    font-size: 20px;
+}
+
+.social-link-button:hover {
+    background: #1565c0;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.social-hint {
+    font-size: 13px;
+    color: #666;
+    margin-top: 10px;
+}
+
+/* Colores para cada red social */
+.task-instagram .social-link-button {
+    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+}
+
+.task-twitter .social-link-button {
+    background: #1da1f2;
+}
+
+.task-telegram .social-link-button {
+    background: #0088cc;
+}
+
+.task-tiktok .social-link-button {
+    background: #000;
+}
+
+.task-facebook .social-link-button {
+    background: #3b5998;
+}
+
+.task-youtube .social-link-button {
+    background: #FF0000;
+}
+
+/* Estilos para el contenedor de video */
+.video-container {
+    margin: 20px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%; /* Proporción 16:9 */
+    height: 0;
+    overflow: hidden;
+}
+
+.video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Estilos para el video promocional largo */
+.task-video-promo-long .task-icon {
+    background: linear-gradient(135deg, #ff9800, #f57c00);
+}
+
+.task-video-promo-long .progress-bar {
+    background: #f57c00;
+}
+
+/* Estilos para el contador de video */
+.video-timer {
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: 600;
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+}
+
+.video-timer i {
+    margin-right: 8px;
+    color: #f44336;
+}
+
+.video-complete {
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    display: none;
+}
+
+.video-complete i {
+    display: block;
+    font-size: 40px;
+    color: #4CAF50;
+    margin-bottom: 15px;
+}

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CATSS - Ruleta de Premios</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="ruleta.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <button id="sidebarToggle" class="sidebar-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="sidebar">
+        <div class="profile">  
+            <img id="sidebarProfileImage" src="default-avatar.png" alt="Profile">
+            <h3 id="sidebarUsername">Usuario</h3>
+            <p>
+                <i class="fas fa-wallet"></i> Balance: 
+                <span id="balance">0.00000000</span> USDC
+            </p>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a href="profile.html"><i class="fas fa-user"></i> Perfil</a></li>
+                <li><a href="store.html"><i class="fas fa-store"></i> Store</a></li>
+                <li><a href="#"><i class="fas fa-tasks"></i> Tasks</a></li>
+                <li><a href="games.html" class="active"><i class="fas fa-gamepad"></i> Jugar y Ganar</a></li>
+                <li><a href="#"><i class="fas fa-users"></i> Referidos</a></li>
+                <li><a href="#"><i class="fas fa-history"></i> Historial de transacciones</a></li>
+                <li><a href="withdrawal.html" class="active"><i class="fas fa-money-bill-wave"></i> Retirar fondos</a></li>
+                <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="wheel-container sidebar-active">
+        <h1><i class="fas fa-dharmachakra"></i> Ruleta de la Fortuna</h1>
+        
+        <div class="game-content">
+            <div class="wheel-section">
+                <div class="wheel-wrapper">
+                    <div class="wheel">
+                        <div class="wheel-inner">
+                            <!-- Los segmentos se generarán dinámicamente con JavaScript -->
+                        </div>
+                        <div class="wheel-center">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                    </div>
+                    <div class="wheel-pointer">
+                        <i class="fas fa-caret-up"></i>
+                    </div>
+                </div>
+
+                <div class="prizes-info">
+                    <h2><i class="fas fa-gift"></i> Premios Posibles</h2>
+                    <div class="prizes-grid">
+                        <div class="prize-item">
+                            <i class="fas fa-bolt"></i>
+                            <span>+50% Tasa de Minería (24h)</span>
+                        </div>
+                        <div class="prize-item">
+                            <i class="fas fa-rocket"></i>
+                            <span>+100% Tasa de Minería (12h)</span>
+                        </div>
+                        <div class="prize-item">
+                            <i class="fas fa-fire"></i>
+                            <span>+200% Tasa de Minería (6h)</span>
+                        </div>
+                        <div class="prize-item">
+                            <i class="fas fa-redo"></i>
+                            <span>Giro Extra</span>
+                        </div>
+                        <div class="prize-item">
+                            <i class="fas fa-clock"></i>
+                            <span>-2h Tiempo de Minería</span>
+                        </div>
+                        <div class="prize-item">
+                            <i class="fas fa-star"></i>
+                            <span>Bonus Instantáneo</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="wheel-controls">
+                <div class="spins-left">
+                    <i class="fas fa-sync"></i>
+                    Giros disponibles: <span id="spinsCount">1</span>
+                </div>
+                <button id="spinButton" class="spin-button">
+                    <i class="fas fa-play"></i> Girar Ruleta
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="notificationContainer"></div>
+
+    <script src="auth.js"></script>
+    <script src="ruleta.js"></script>
+</body>
+</html>

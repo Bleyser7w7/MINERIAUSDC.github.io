@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programa de Referidos - Geometry Runner</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ff5733;
+            --secondary-color: #1e88e5;
+            --accent-color: #00c853;
+            --danger-color: #f44336;
+            --text-color: #ffffff;
+            --background-color: #000000;
+            --white: #ffffff;
+            --shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+            --border-radius: 8px;
+            --orange-color: #ff5733;
+        }
+        
+        .container {
+            padding: 20px;
+            max-width:1500px;
+            margin: 0 auto;
+            margin-left: 250px;
+        }
+        
+        h1 {
+            color: var(--orange-color);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: var(--text-color);
+            margin-bottom: 30px;
+        }
+        
+        .stats-panel {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            background-color: var(--background-color);
+        }
+        
+        .stat-card h3 {
+            color: var(--orange-color);
+            margin-bottom: 10px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .stat-card button {
+            background-color: var(--orange-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: var(--border-radius);
+            margin-top: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .stat-card button:hover {
+            background-color: #e84a1c;
+        }
+        
+        .share-section {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .share-section h2 {
+            color: var(--orange-color);
+            margin-bottom: 15px;
+        }
+        
+        .share-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .share-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            color: white;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+        
+        .share-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .whatsapp { background-color: #25D366; }
+        .facebook { background-color: #3b5998; }
+        .twitter { background-color: #1DA1F2; }
+        .copy-link { background-color: var(--orange-color); }
+        
+        .referrals-list {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .referrals-list h2 {
+            color: var(--orange-color);
+            margin-bottom: 15px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-weight: bold;
+        }
+        
+        tr:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        
+        .status-active {
+            color: var(--orange-color);
+            font-weight: bold;
+        }
+        
+        .faq-section {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+        }
+        
+        .faq-section h2 {
+            color: var(--orange-color);
+            margin-bottom: 15px;
+        }
+        
+        .faq-item {
+            margin-bottom: 20px;
+        }
+        
+        .faq-question {
+            font-weight: bold;
+            color: var(--text-color);
+            margin-bottom: 5px;
+        }
+        
+        .faq-answer {
+            color: #666;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background-color: var(--orange-color);
+            color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+        
+        .notification.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <button id="sidebarToggle" class="sidebar-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="sidebar">
+        <div class="profile">
+            <img id="sidebarProfileImage" src="perfil.png" alt="Profile">
+            <h3 id="sidebarUsername">Usuario</h3>
+            <p>
+                <i class="fas fa-wallet"></i> Balance: 
+                <span id="balance">0.00000000</span> USDC
+            </p>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a href="profile.html"><i class="fas fa-user"></i> Perfil</a></li>
+                <li><a href="store.html"><i class="fas fa-store"></i> Store</a></li>
+                <li><a href="tasks.html"><i class="fas fa-tasks"></i> Tasks</a></li>
+                <li><a href="games.html"><i class="fas fa-gamepad"></i> Jugar y Ganar</a></li>
+                <li><a href="referidos.html"><i class="fas fa-users"></i> Referidos</a></li>
+                <li><a href="historial.html"><i class="fas fa-history"></i> Historial de transacciones</a></li>
+                <li><a href="withdrawal.html"><i class="fas fa-money-bill-wave"></i> Retirar fondos</a></li>
+                <li><a href="cerrar.html" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="container">
+        <h1>Programa de Referidos</h1>
+        <p class="subtitle">Comparte y gana 10% de lo que generen tus referidos</p>
+        
+        <div class="stats-panel">
+            <div class="stat-card">
+                <h3>Tu Código de Referido</h3>
+                <div class="stat-value" id="referral-code">GR38F1X9</div>
+                <button id="copy-code-btn">Copiar código</button>
+            </div>
+            <div class="stat-card">
+                <h3>Referidos Activos</h3>
+                <div class="stat-value" id="active-referrals">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Ganancias Totales</h3>
+                <div class="stat-value" id="total-earnings">0.00000000 USDC</div>
+            </div>
+        </div>
+        
+        <div class="share-section">
+            <h2>Comparte tu enlace de referido</h2>
+            <div id="referral-link" class="stat-value">https://geometryrunner.com/registro?ref=GR38F1X9</div>
+            <div class="share-buttons">
+                <button class="share-btn whatsapp" id="share-whatsapp">
+                    <i class="fab fa-whatsapp"></i> WhatsApp
+                </button>
+                <button class="share-btn facebook" id="share-facebook">
+                    <i class="fab fa-facebook-f"></i> Facebook
+                </button>
+                <button class="share-btn twitter" id="share-twitter">
+                    <i class="fab fa-twitter"></i> Twitter
+                </button>
+                <button class="share-btn copy-link" id="copy-link-btn">
+                    <i class="fas fa-link"></i> Copiar enlace
+                </button>
+            </div>
+        </div>
+        
+        <div class="referrals-list">
+            <h2>Tus Referidos</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Fecha de registro</th>
+                        <th>Estado</th>
+                        <th>Ganancias generadas</th>
+                    </tr>
+                </thead>
+                <tbody id="referrals-table">
+                    <tr>
+                        <td colspan="4" style="text-align: center;">Aún no tienes referidos.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="faq-section">
+            <h2>Preguntas Frecuentes</h2>
+            <div class="faq-item">
+                <div class="faq-question">¿Cómo funciona el programa de referidos?</div>
+                <div class="faq-answer">
+                    Cuando alguien se registra usando tu código de referido, recibirás el 10% de todas las ganancias que genere en la plataforma. 
+                    Esto incluye ganancias por juegos, tareas completadas y cualquier otra actividad que genere USDC.
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">¿Cómo recibo mis ganancias por referidos?</div>
+                <div class="faq-answer">
+                    Las ganancias por referidos se añaden automáticamente a tu balance principal en USDC. 
+                    No necesitas realizar ninguna acción adicional para reclamarlas.
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">¿Hay un límite de referidos?</div>
+                <div class="faq-answer">
+                    No, puedes invitar a tantas personas como quieras. Cuantos más referidos activos tengas, mayores serán tus ganancias.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">Copiado al portapapeles</div>
+    
+    <div id="notificationContainer"></div>
+
+    <!-- Cargar auth.js primero -->
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+    <script src="referidos.js"></script>
+</body>
+</html> 

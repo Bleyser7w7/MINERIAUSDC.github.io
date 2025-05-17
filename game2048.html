@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2048 - Geometry Runner</title>
+    <style>
+        :root {
+            --primary-color: #6200ea;
+            --secondary-color: #1e88e5;
+            --text-color: #333;
+            --background-color: #f5f5f5;
+            --white: #ffffff;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .balance {
+            background-color: var(--white);
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            display: inline-block;
+            margin-bottom: 20px;
+            font-weight: bold;
+            box-shadow: var(--shadow);
+        }
+        
+        .balance span {
+            color: var(--primary-color);
+        }
+        
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .score-container, .best-container {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            width: 48%;
+            text-align: center;
+        }
+        
+        .score-title, .best-title {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .score, .best {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .game-container {
+            position: relative;
+            background-color: #bbada0;
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 15px;
+            background-color: #bbada0;
+            border-radius: 5px;
+            position: relative;
+            padding: 15px;
+            user-select: none;
+        }
+        
+        .grid-cell {
+            width: 100%;
+            aspect-ratio: 1;
+            background-color: rgba(238, 228, 218, 0.35);
+            border-radius: 3px;
+            position: relative;
+        }
+        
+        .tile {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #eee4da;
+            width: calc(25% - 15px);
+            height: calc(25% - 15px);
+            font-size: 35px;
+            font-weight: bold;
+            border-radius: 3px;
+            transition: all 0.12s ease-in-out;
+            transform: translate3d(0, 0, 0);
+            -webkit-transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            will-change: transform;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 1;
+            user-select: none;
+            touch-action: none;
+        }
+        
+        .tile-2 { background-color: #eee4da; color: #776e65; }
+        .tile-4 { background-color: #ede0c8; color: #776e65; }
+        .tile-8 { background-color: #f2b179; color: white; }
+        .tile-16 { background-color: #f59563; color: white; }
+        .tile-32 { background-color: #f67c5f; color: white; }
+        .tile-64 { background-color: #f65e3b; color: white; }
+        .tile-128 { background-color: #edcf72; color: white; font-size: 30px; }
+        .tile-256 { background-color: #edcc61; color: white; font-size: 30px; }
+        .tile-512 { background-color: #edc850; color: white; font-size: 30px; }
+        .tile-1024 { background-color: #edc53f; color: white; font-size: 25px; }
+        .tile-2048 { background-color: #edc22e; color: white; font-size: 25px; }
+        
+        .tile-merged {
+            z-index: 20;
+            animation: merge 0.15s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+        
+        .tile-new {
+            animation: appear 0.3s ease-in-out;
+        }
+        
+        .tile-moving {
+            transition: transform 0.15s ease-in-out, top 0.15s ease-in-out, left 0.15s ease-in-out;
+        }
+        
+        @keyframes merge {
+            0% {
+                transform: scale(1) translate3d(var(--moveX), var(--moveY), 0);
+            }
+            50% {
+                transform: scale(1.2) translate3d(var(--moveX), var(--moveY), 0);
+            }
+            100% {
+                transform: scale(1) translate3d(var(--moveX), var(--moveY), 0);
+            }
+        }
+        
+        @keyframes appear {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .tile-sliding {
+            animation: slide 0.12s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
+            will-change: transform;
+        }
+        
+        @keyframes slide {
+            0% {
+                transform: translate3d(0, 0, 0);
+            }
+            100% {
+                transform: translate3d(var(--moveX), var(--moveY), 0);
+            }
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #5000c8;
+        }
+        
+        .game-over {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.85);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--border-radius);
+            z-index: 100;
+            display: none;
+        }
+        
+        .game-over h2 {
+            font-size: 28px;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .game-over p {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        
+        .game-won {
+            background-color: rgba(237, 194, 46, 0.5);
+        }
+        
+        .directions {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+        
+        .directions h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .directions ul {
+            text-align: left;
+            padding-left: 20px;
+        }
+        
+        .return-btn {
+            margin-top: 20px;
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .return-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        @media (max-width: 500px) {
+            .game-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .score-container, .best-container {
+                width: 100%;
+            }
+        }
+        
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        
+        .notification {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 25px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .notification.success {
+            background-color: #4CAF50;
+        }
+        
+        .notification.error {
+            background-color: #f44336;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+        
+        .notification.hiding {
+            animation: slideOut 0.3s ease-in forwards;
+        }
+        
+        .grid-container {
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+            padding: 15px;
+            background-color: #bbada0;
+            border-radius: 5px;
+            cursor: default;
+        }
+        
+        @media (hover: hover) {
+            .grid-container {
+                cursor: grab;
+            }
+            .grid-container:active {
+                cursor: grabbing;
+            }
+        }
+        
+        .tile {
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        
+        @media (hover: none) and (pointer: coarse) {
+            .grid-container {
+                cursor: default;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>2048</h1>
+        
+        <div class="balance">
+            Tu balance: <span id="balance">0.00000000</span> USDC
+        </div>
+        
+        <div class="game-info">
+            <div class="score-container">
+                <div class="score-title">PUNTUACIÓN</div>
+                <div class="score" id="score">0</div>
+            </div>
+            <div class="best-container">
+                <div class="best-title">MEJOR</div>
+                <div class="best" id="best-score">0</div>
+            </div>
+        </div>
+        
+        <div class="game-container">
+            <div class="grid-container" id="grid-container"></div>
+            
+            <div class="game-over" id="game-over">
+                <h2>¡Juego terminado!</h2>
+                <p>Puntuación: <span id="final-score">0</span></p>
+                <button id="try-again-btn">Intentar de nuevo</button>
+            </div>
+            
+            <div class="game-over game-won" id="game-won">
+                <h2>¡Ganaste!</h2>
+                <p>¡Has alcanzado 2048!</p>
+                <p>Ganaste: <span id="reward">0.00000000</span> USDC</p>
+                <button id="keep-going-btn">Seguir jugando</button>
+                <button id="try-again-btn-won">Nuevo juego</button>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="new-game-btn">Nuevo juego</button>
+            <button id="claim-reward-btn" disabled>Reclamar recompensa</button>
+        </div>
+        
+        <div class="directions">
+            <h3>Cómo jugar</h3>
+            <ul>
+                <li>Usa las teclas de flecha para mover las fichas.</li>
+                <li>Cuando dos fichas con el mismo número se tocan, se fusionan en una.</li>
+                <li>Alcanza la ficha 2048 para ganar.</li>
+                <li>Cada vez que alcances 2048, ganarás una recompensa en USDC.</li>
+            </ul>
+        </div>
+        
+        <a href="games.html" class="return-btn">Volver a Juegos</a>
+    </div>
+    
+    <div id="notificationContainer" class="notification-container"></div>
+    
+    <script src="auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar que el usuario esté autenticado
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) {
+                console.error('Usuario no autenticado');
+                showNotification('error', 'Por favor, inicia sesión para jugar');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+                return;
+            }
+
+            // Verificar que la función modifyBalance está disponible
+            if (typeof window.modifyBalance !== 'function') {
+                console.error('La función modifyBalance no está disponible');
+                showNotification('error', 'Error: No se puede conectar con el sistema de recompensas. Por favor, recarga la página.');
+                return;
+            }
+
+            // Referencias a elementos DOM
+            const gridContainer = document.getElementById('grid-container');
+            const scoreElement = document.getElementById('score');
+            const bestScoreElement = document.getElementById('best-score');
+            const balanceElement = document.getElementById('balance');
+            const gameOverElement = document.getElementById('game-over');
+            const gameWonElement = document.getElementById('game-won');
+            const finalScoreElement = document.getElementById('final-score');
+            const rewardElement = document.getElementById('reward');
+            const newGameBtn = document.getElementById('new-game-btn');
+            const tryAgainBtn = document.getElementById('try-again-btn');
+            const tryAgainBtnWon = document.getElementById('try-again-btn-won');
+            const keepGoingBtn = document.getElementById('keep-going-btn');
+            const claimRewardBtn = document.getElementById('claim-reward-btn');
+            
+            // Variables del juego
+            let grid = [];
+            let score = 0;
+            let bestScore = parseInt(localStorage.getItem('2048BestScore') || '0');
+            let hasWon = false;
+            let canMove = true;
+            const gridSize = 4;
+            const REWARD_RATE = 0.0001; // 1000 puntos = 0.0001 USDC
+            let currentReward = 0;
+            let lastClaimedScore = 0;
+            
+            // Balance del usuario
+            let balance = parseFloat(localStorage.getItem('userBalance') || '0');
+            let withdrawableBalance = parseFloat(localStorage.getItem('withdrawableBalance') || '0');
+            balanceElement.textContent = withdrawableBalance.toFixed(8);
+            
+            // Después de las variables del juego
+            let mouseStartX, mouseStartY;
+            let isDragging = false;
+            let touchStartX, touchStartY;
+            
+            // Actualizar los event listeners táctiles
+            let touchStartTime;
+            let lastTouchMove;
+            const SWIPE_THRESHOLD = 40;
+            const SWIPE_TIMEOUT = 300;
+            
+            // Iniciar juego
+            initGame();
+            
+            // Event Listeners
+            document.addEventListener('keydown', handleKeyDown);
+            newGameBtn.addEventListener('click', initGame);
+            tryAgainBtn.addEventListener('click', initGame);
+            tryAgainBtnWon.addEventListener('click', initGame);
+            keepGoingBtn.addEventListener('click', function() {
+                gameWonElement.style.display = 'none';
+                hasWon = true; // Evita que vuelva a aparecer el mensaje de victoria
+            });
+            claimRewardBtn.addEventListener('click', claimReward);
+            
+            // Mouse events para arrastrar
+            gridContainer.addEventListener('mousedown', function(e) {
+                mouseStartX = e.clientX;
+                mouseStartY = e.clientY;
+                isDragging = true;
+                e.preventDefault(); // Prevenir selección de texto
+            });
+            
+            gridContainer.addEventListener('mousemove', function(e) {
+                if (!isDragging) return;
+                e.preventDefault(); // Prevenir selección de texto
+            });
+            
+            gridContainer.addEventListener('mouseup', function(e) {
+                if (!isDragging) return;
+                
+                const deltaX = e.clientX - mouseStartX;
+                const deltaY = e.clientY - mouseStartY;
+                const minSwipeDistance = 50; // Misma distancia mínima que para touch
+                
+                if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                    if (Math.abs(deltaX) > minSwipeDistance) {
+                        if (deltaX > 0) {
+                            // Arrastre a la derecha
+                            if (moveRight()) {
+                                afterMove();
+                            }
+                        } else {
+                            // Arrastre a la izquierda
+                            if (moveLeft()) {
+                                afterMove();
+                            }
+                        }
+                    }
+                } else {
+                    if (Math.abs(deltaY) > minSwipeDistance) {
+                        if (deltaY > 0) {
+                            // Arrastre hacia abajo
+                            if (moveDown()) {
+                                afterMove();
+                            }
+                        } else {
+                            // Arrastre hacia arriba
+                            if (moveUp()) {
+                                afterMove();
+                            }
+                        }
+                    }
+                }
+                
+                isDragging = false;
+            });
+            
+            // Prevenir que el arrastre continúe si el mouse sale del contenedor
+            gridContainer.addEventListener('mouseleave', function() {
+                isDragging = false;
+            });
+            
+            // Añadir estilos CSS para mejorar la experiencia de arrastre
+            gridContainer.style.cursor = 'grab';
+            gridContainer.addEventListener('mousedown', () => {
+                gridContainer.style.cursor = 'grabbing';
+            });
+            gridContainer.addEventListener('mouseup', () => {
+                gridContainer.style.cursor = 'grab';
+            });
+            
+            // Prevenir la selección de texto durante el arrastre
+            document.addEventListener('selectstart', function(e) {
+                if (isDragging) {
+                    e.preventDefault();
+                }
+            });
+            
+            // Touch events
+            gridContainer.addEventListener('touchstart', function(e) {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                touchStartTime = Date.now();
+                lastTouchMove = { x: touchStartX, y: touchStartY };
+                e.preventDefault();
+            }, { passive: false });
+            
+            gridContainer.addEventListener('touchmove', function(e) {
+                if (!canMove) return;
+                
+                const touchX = e.touches[0].clientX;
+                const touchY = e.touches[0].clientY;
+                const deltaX = touchX - lastTouchMove.x;
+                const deltaY = touchY - lastTouchMove.y;
+                
+                // Actualizar última posición
+                lastTouchMove = { x: touchX, y: touchY };
+                
+                // Prevenir scroll solo si hay un movimiento significativo horizontal
+                if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+            
+            gridContainer.addEventListener('touchend', function(e) {
+                if (!canMove) return;
+                
+                const touchEndX = e.changedTouches[0].clientX;
+                const touchEndY = e.changedTouches[0].clientY;
+                const deltaX = touchEndX - touchStartX;
+                const deltaY = touchEndY - touchStartY;
+                const touchDuration = Date.now() - touchStartTime;
+                
+                // Calcular velocidad del swipe
+                const velocity = Math.sqrt(deltaX * deltaX + deltaY * deltaY) / touchDuration;
+                
+                // Reducir el umbral si el swipe fue rápido
+                const effectiveThreshold = velocity > 0.8 ? SWIPE_THRESHOLD * 0.7 : SWIPE_THRESHOLD;
+                
+                if (touchDuration < SWIPE_TIMEOUT) {
+                    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                        if (Math.abs(deltaX) > effectiveThreshold) {
+                            if (deltaX > 0) {
+                                if (moveRight()) afterMove();
+                            } else {
+                                if (moveLeft()) afterMove();
+                            }
+                        }
+                    } else {
+                        if (Math.abs(deltaY) > effectiveThreshold) {
+                            if (deltaY > 0) {
+                                if (moveDown()) afterMove();
+                            } else {
+                                if (moveUp()) afterMove();
+                            }
+                        }
+                    }
+                }
+            }, { passive: false });
+            
+            // Funciones del juego
+            function initGame() {
+                // Limpiar grid
+                grid = [];
+                for (let i = 0; i < gridSize; i++) {
+                    grid[i] = [];
+                    for (let j = 0; j < gridSize; j++) {
+                        grid[i][j] = 0;
+                    }
+                }
+                
+                // Restablecer variables
+                score = 0;
+                lastClaimedScore = 0;
+                currentReward = 0;
+                hasWon = false;
+                canMove = true;
+                scoreElement.textContent = '0';
+                bestScoreElement.textContent = bestScore.toString();
+                gameOverElement.style.display = 'none';
+                gameWonElement.style.display = 'none';
+                claimRewardBtn.disabled = true;
+                
+                // Limpiar grid container
+                gridContainer.innerHTML = '';
+                
+                // Crear celdas de grid
+                for (let i = 0; i < gridSize * gridSize; i++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'grid-cell';
+                    gridContainer.appendChild(cell);
+                }
+                
+                // Añadir dos fichas iniciales
+                addRandomTile();
+                addRandomTile();
+                
+                // Actualizar la visualización
+                updateGridDisplay();
+            }
+            
+            function addRandomTile() {
+                // Encontrar todas las celdas vacías
+                const emptyCells = [];
+                for (let i = 0; i < gridSize; i++) {
+                    for (let j = 0; j < gridSize; j++) {
+                        if (grid[i][j] === 0) {
+                            emptyCells.push({x: i, y: j});
+                        }
+                    }
+                }
+                
+                if (emptyCells.length > 0) {
+                    // Elegir una celda vacía aleatoriamente
+                    const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+                    
+                    // 90% de probabilidad de 2, 10% de 4
+                    grid[randomCell.x][randomCell.y] = Math.random() < 0.9 ? 2 : 4;
+                    
+                    return true;
+                }
+                
+                return false;
+            }
+            
+            function updateGridDisplay() {
+                // Limpiar tiles actuales
+                const tiles = document.querySelectorAll('.tile');
+                tiles.forEach(tile => {
+                    tile.remove();
+                });
+                
+                // Crear nuevos tiles
+                for (let i = 0; i < gridSize; i++) {
+                    for (let j = 0; j < gridSize; j++) {
+                        if (grid[i][j] !== 0) {
+                            createTile(i, j, grid[i][j], false, false);
+                        }
+                    }
+                }
+            }
+            
+            function createTile(row, col, value, isNew = false, isMerged = false, oldPosition = null) {
+                const cellWidth = gridContainer.children[0].offsetWidth;
+                const cellHeight = gridContainer.children[0].offsetHeight;
+                const gap = 15;
+                
+                const tile = document.createElement('div');
+                tile.className = `tile tile-${value}`;
+                tile.textContent = value;
+                
+                const top = row * (cellHeight + gap) + 15;
+                const left = col * (cellWidth + gap) + 15;
+                
+                if (oldPosition && !isNew) {
+                    const moveX = left - oldPosition.left;
+                    const moveY = top - oldPosition.top;
+                    
+                    tile.style.top = `${oldPosition.top}px`;
+                    tile.style.left = `${oldPosition.left}px`;
+                    tile.style.setProperty('--moveX', `${moveX}px`);
+                    tile.style.setProperty('--moveY', `${moveY}px`);
+                    
+                    requestAnimationFrame(() => {
+                        tile.classList.add('tile-sliding');
+                        
+                        setTimeout(() => {
+                            tile.classList.remove('tile-sliding');
+                            tile.style.top = `${top}px`;
+                            tile.style.left = `${left}px`;
+                            
+                            if (isMerged) {
+                                requestAnimationFrame(() => {
+                                    tile.classList.add('tile-merged');
+                                });
+                            }
+                        }, 120);
+                    });
+                } else {
+                    tile.style.top = `${top}px`;
+                    tile.style.left = `${left}px`;
+                    
+                    if (isNew) {
+                        tile.classList.add('tile-new');
+                    } else if (isMerged) {
+                        tile.classList.add('tile-merged');
+                    }
+                }
+                
+                gridContainer.appendChild(tile);
+                return tile;
+            }
+            
+            function handleKeyDown(e) {
+                if (!canMove) return;
+                
+                let moved = false;
+                
+                switch(e.key) {
+                    case 'ArrowUp':
+                        e.preventDefault();
+                        moved = moveUp();
+                        break;
+                    case 'ArrowDown':
+                        e.preventDefault();
+                        moved = moveDown();
+                        break;
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        moved = moveLeft();
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        moved = moveRight();
+                        break;
+                    default:
+                        return;
+                }
+                
+                if (moved) {
+                    // Actualizar score
+                    scoreElement.textContent = score.toString();
+                    
+                    // Actualizar mejor puntuación
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestScoreElement.textContent = bestScore.toString();
+                        localStorage.setItem('2048BestScore', bestScore.toString());
+                    }
+                    
+                    // Añadir nueva ficha
+                    setTimeout(() => {
+                        addRandomTile();
+                        
+                        // Verificar si el juego ha terminado
+                        if (!canMakeMove()) {
+                            gameOver();
+                        }
+                    }, 150);
+                }
+            }
+            
+            function afterMove() {
+                // Actualizar score
+                scoreElement.textContent = score.toString();
+                
+                // Calcular nueva recompensa
+                currentReward = calculateReward(score, lastClaimedScore);
+                
+                // Habilitar el botón de reclamar si hay recompensa disponible
+                if (currentReward > 0) {
+                    claimRewardBtn.disabled = false;
+                    rewardElement.textContent = currentReward.toFixed(8);
+                }
+                
+                // Actualizar mejor puntuación
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestScoreElement.textContent = bestScore.toString();
+                    localStorage.setItem('2048BestScore', bestScore.toString());
+                }
+                
+                // Añadir nueva ficha
+                addRandomTile();
+                
+                // Actualizar visualización
+                updateGridDisplay();
+                
+                // Verificar si el juego ha terminado
+                if (!canMakeMove()) {
+                    gameOver();
+                }
+            }
+            
+            function moveRight() {
+                let moved = false;
+                
+                for (let i = 0; i < gridSize; i++) {
+                    const line = [...grid[i]].reverse();
+                    if (moveLine(line, i, 'right')) {
+                        moved = true;
+                        grid[i] = [...line].reverse();
+                    }
+                }
+                
+                if (moved) {
+                    setTimeout(() => {
+                        updateGridDisplay();
+                    }, 50);
+                }
+                
+                return moved;
+            }
+            
+            function moveLeft() {
+                let moved = false;
+                
+                for (let i = 0; i < gridSize; i++) {
+                    if (moveLine(grid[i], i, 'left')) {
+                        moved = true;
+                    }
+                }
+                
+                if (moved) {
+                    setTimeout(() => {
+                        updateGridDisplay();
+                    }, 50);
+                }
+                
+                return moved;
+            }
+            
+            function moveUp() {
+                let moved = false;
+                
+                for (let j = 0; j < gridSize; j++) {
+                    const line = [];
+                    for (let i = 0; i < gridSize; i++) {
+                        line.push(grid[i][j]);
+                    }
+                    
+                    if (moveLine(line, j, 'up')) {
+                        moved = true;
+                        for (let i = 0; i < gridSize; i++) {
+                            grid[i][j] = line[i];
+                        }
+                    }
+                }
+                
+                if (moved) {
+                    setTimeout(() => {
+                        updateGridDisplay();
+                    }, 50);
+                }
+                
+                return moved;
+            }
+            
+            function moveDown() {
+                let moved = false;
+                
+                for (let j = 0; j < gridSize; j++) {
+                    const line = [];
+                    for (let i = 0; i < gridSize; i++) {
+                        line.push(grid[i][j]);
+                    }
+                    
+                    line.reverse();
+                    if (moveLine(line, j, 'down')) {
+                        moved = true;
+                        line.reverse();
+                        for (let i = 0; i < gridSize; i++) {
+                            grid[i][j] = line[i];
+                        }
+                    }
+                }
+                
+                if (moved) {
+                    setTimeout(() => {
+                        updateGridDisplay();
+                    }, 50);
+                }
+                
+                return moved;
+            }
+            
+            function moveLine(line, index, direction) {
+                const originalLine = [...line];
+                let moved = false;
+                let merged = false;
+                
+                // Eliminar ceros y mantener el orden
+                const nonZeroTiles = line.filter(tile => tile !== 0);
+                
+                // Fusionar fichas adyacentes
+                for (let i = 0; i < nonZeroTiles.length - 1; i++) {
+                    if (nonZeroTiles[i] === nonZeroTiles[i + 1]) {
+                        nonZeroTiles[i] *= 2;
+                        nonZeroTiles.splice(i + 1, 1);
+                        moved = true;
+                        merged = true;
+                        score += nonZeroTiles[i];
+                        
+                        if (nonZeroTiles[i] === 2048 && !hasWon) {
+                            gameWon();
+                        }
+                    }
+                }
+                
+                // Rellenar con ceros al final
+                while (nonZeroTiles.length < gridSize) {
+                    nonZeroTiles.push(0);
+                }
+                
+                // Copiar de vuelta a la línea original y animar
+                for (let i = 0; i < gridSize; i++) {
+                    const hasChanged = line[i] !== nonZeroTiles[i];
+                    const oldValue = line[i];
+                    line[i] = nonZeroTiles[i];
+                    
+                    if (hasChanged && line[i] !== 0) {
+                        const oldPos = originalLine.indexOf(line[i]);
+                        if (oldPos !== -1) {
+                            const oldPosition = {
+                                top: (direction === 'up' || direction === 'down' ? oldPos : index) * (gridContainer.children[0].offsetHeight + 15) + 15,
+                                left: (direction === 'left' || direction === 'right' ? oldPos : index) * (gridContainer.children[0].offsetWidth + 15) + 15
+                            };
+                            
+                            createTile(
+                                direction === 'up' || direction === 'down' ? i : index,
+                                direction === 'left' || direction === 'right' ? i : index,
+                                line[i],
+                                false,
+                                merged,
+                                oldPosition
+                            );
+                        } else {
+                            createTile(
+                                direction === 'up' || direction === 'down' ? i : index,
+                                direction === 'left' || direction === 'right' ? i : index,
+                                line[i],
+                                true,
+                                false
+                            );
+                        }
+                    }
+                }
+                
+                return moved || !originalLine.every((value, idx) => value === line[idx]);
+            }
+            
+            function canMakeMove() {
+                // Comprobar si hay celdas vacías
+                for (let i = 0; i < gridSize; i++) {
+                    for (let j = 0; j < gridSize; j++) {
+                        if (grid[i][j] === 0) {
+                            return true;
+                        }
+                    }
+                }
+                
+                // Comprobar fusiones horizontales
+                for (let i = 0; i < gridSize; i++) {
+                    for (let j = 0; j < gridSize - 1; j++) {
+                        if (grid[i][j] !== 0 && grid[i][j] === grid[i][j + 1]) {
+                            return true;
+                        }
+                    }
+                }
+                
+                // Comprobar fusiones verticales
+                for (let i = 0; i < gridSize - 1; i++) {
+                    for (let j = 0; j < gridSize; j++) {
+                        if (grid[i][j] !== 0 && grid[i][j] === grid[i + 1][j]) {
+                            return true;
+                        }
+                    }
+                }
+                
+                return false;
+            }
+            
+            function gameOver() {
+                canMove = false;
+                finalScoreElement.textContent = score.toString();
+                
+                // Calcular recompensa final si hay puntos sin reclamar
+                const finalReward = calculateReward(score, lastClaimedScore);
+                if (finalReward > 0) {
+                    currentReward = finalReward; // Asignar la recompensa final a currentReward
+                    rewardElement.textContent = currentReward.toFixed(8);
+                    claimRewardBtn.disabled = false;
+                }
+                
+                gameOverElement.style.display = 'flex';
+            }
+            
+            function gameWon() {
+                if (!hasWon) {
+                    hasWon = true;
+                    claimRewardBtn.disabled = false;
+                    rewardElement.textContent = currentReward.toFixed(8);
+                    gameWonElement.style.display = 'flex';
+                    
+                    // Usar la función centralizada para actualizar el balance
+                    window.modifyBalance(currentReward);
+                }
+            }
+            
+            function claimReward() {
+                if (currentReward > 0 && !claimRewardBtn.disabled) {
+                    try {
+                        // Verificar que la función modifyBalance existe
+                        if (typeof window.modifyBalance !== 'function') {
+                            throw new Error('La función modifyBalance no está disponible');
+                        }
+
+                        const rewardToAdd = currentReward; // Guardar el valor antes de resetearlo
+                        const pointsEarned = score - lastClaimedScore;
+                        
+                        // Usar la función centralizada para actualizar el balance
+                        const newBalance = window.modifyBalance(rewardToAdd);
+                        
+                        if (typeof newBalance !== 'number') {
+                            throw new Error('Error al actualizar el balance');
+                        }
+                        
+                        // Actualizar último score reclamado
+                        lastClaimedScore = score;
+                        localStorage.setItem('lastClaimedScore', lastClaimedScore.toString());
+                        
+                        // Resetear recompensa actual
+                        currentReward = 0;
+                        rewardElement.textContent = '0.00000000';
+                        
+                        // Deshabilitar botón
+                        claimRewardBtn.disabled = true;
+                        
+                        // Ocultar mensaje de victoria si está visible
+                        gameWonElement.style.display = 'none';
+                        
+                        // Mostrar notificación con el valor correcto
+                        showNotification('success', `¡Felicidades! Has reclamado ${rewardToAdd.toFixed(8)} USDC (${pointsEarned} puntos = ${rewardToAdd.toFixed(8)} USDC)`);
+                        
+                        // Actualizar el balance mostrado
+                        updateAllBalances();
+                        
+                    } catch (error) {
+                        console.error('Error al reclamar recompensa:', error);
+                        showNotification('error', `Error al reclamar la recompensa: ${error.message}`);
+                    }
+                }
+            }
+            
+            function showNotification(type, message) {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.textContent = message;
+                
+                const container = document.getElementById('notificationContainer');
+                container.appendChild(notification);
+                
+                // Remover la notificación después de 3 segundos
+                setTimeout(() => {
+                    notification.classList.add('hiding');
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 300);
+                }, 3000);
+            }
+
+            // Función para calcular la recompensa basada en la puntuación
+            function calculateReward(currentScore, lastClaimed) {
+                const scoreDiff = currentScore - lastClaimed;
+                // 1000 puntos = 0.0001 USDC
+                const rewardAmount = (scoreDiff / 1000) * 0.0001;
+                return rewardAmount;
+            }
+
+            // Función para actualizar el balance en todos los lugares
+            function updateAllBalances() {
+                const balance = parseFloat(localStorage.getItem('withdrawableBalance')) || 0;
+                document.getElementById('balance').textContent = balance.toFixed(8);
+                balanceElement.textContent = balance.toFixed(8);
+            }
+
+            // Llamar a la función cuando se carga la página
+            updateAllBalances();
+        });
+    </script>
+</body>
+</html> 

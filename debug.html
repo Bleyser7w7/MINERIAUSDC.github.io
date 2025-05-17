@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug GeometryDash</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f0f0; padding: 20px; }
+        h1 { color: #333; text-align: center; }
+        .button { 
+            display: block; width: 200px; padding: 10px; margin: 10px auto;
+            background: #007bff; color: white; border: none; border-radius: 5px;
+            cursor: pointer; text-align: center; text-decoration: none;
+        }
+        .button:hover { background: #0056b3; }
+        #debug-info {
+            background: white; padding: 15px; border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-top: 20px;
+            height: 400px; overflow-y: auto; font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Debug GeometryDash</h1>
+    <a href="geometrydash.html" class="button">Ir al juego</a>
+    <button id="test-elements" class="button">Probar elementos HTML</button>
+    <button id="check-audio" class="button">Verificar audio</button>
+    <div id="debug-info"></div>
+    
+    <script>
+        // Función para agregar información al área de debug
+        function addDebugInfo(message) {
+            const debugArea = document.getElementById('debug-info');
+            const timestamp = new Date().toISOString().substring(11, 23);
+            debugArea.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            debugArea.scrollTop = debugArea.scrollHeight;
+        }
+        
+        // Botón para verificar elementos HTML
+        document.getElementById('test-elements').addEventListener('click', function() {
+            addDebugInfo('Verificando elementos HTML necesarios...');
+            
+            const elementsToCheck = [
+                { id: 'gameCanvas', name: 'Canvas del juego' },
+                { id: 'highScore', name: 'Récord' },
+                { id: 'score', name: 'Puntuación' },
+                { id: 'gameSpeed', name: 'Velocidad del juego' },
+                { id: 'gameMenu', name: 'Menú del juego' },
+                { id: 'gameOver', name: 'Pantalla de juego terminado' },
+                { id: 'startGameBtn', name: 'Botón de inicio' },
+                { id: 'restartGameBtn', name: 'Botón de reinicio' }
+            ];
+            
+            elementsToCheck.forEach(element => {
+                const elem = document.getElementById(element.id);
+                if (elem) {
+                    addDebugInfo(`✅ Elemento ${element.name} (${element.id}) encontrado`);
+                } else {
+                    addDebugInfo(`❌ ERROR: No se encontró el elemento ${element.name} (${element.id})`);
+                }
+            });
+        });
+        
+        // Botón para verificar audio
+        document.getElementById('check-audio').addEventListener('click', function() {
+            addDebugInfo('Verificando capacidades de audio...');
+            
+            // Probar creación de audio
+            try {
+                const testAudio = new Audio();
+                addDebugInfo(`✅ Objeto Audio creado correctamente`);
+                
+                // Probar carga de audio
+                const audioUrl = 'https://assets.mixkit.co/sfx/preview/mixkit-game-level-music-689.mp3';
+                testAudio.src = audioUrl;
+                addDebugInfo(`Cargando audio de prueba desde: ${audioUrl}`);
+                
+                testAudio.onloadeddata = function() {
+                    addDebugInfo(`✅ Audio cargado correctamente`);
+                };
+                
+                testAudio.onerror = function() {
+                    addDebugInfo(`❌ ERROR: No se pudo cargar el audio. Código: ${testAudio.error ? testAudio.error.code : 'desconocido'}`);
+                };
+                
+                // Probar reproducción de audio
+                testAudio.oncanplaythrough = function() {
+                    addDebugInfo(`Audio listo para reproducirse. Intentando reproducir...`);
+                    testAudio.volume = 0.2; // Volumen bajo para prueba
+                    testAudio.play()
+                        .then(() => {
+                            addDebugInfo(`✅ Audio reproducido correctamente`);
+                            // Detener después de 2 segundos
+                            setTimeout(() => {
+                                testAudio.pause();
+                                addDebugInfo(`Audio detenido`);
+                            }, 2000);
+                        })
+                        .catch(error => {
+                            addDebugInfo(`❌ ERROR: No se pudo reproducir el audio: ${error}`);
+                        });
+                };
+            } catch (error) {
+                addDebugInfo(`❌ ERROR: No se pudo crear el objeto Audio: ${error}`);
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MINERUSDC</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <button id="sidebarToggle" class="sidebar-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="sidebar">
+        <div class="profile">
+            <img id="sidebarProfileImage" src="perfil.png" alt="Profile">
+            <h3 id="sidebarUsername">Usuario</h3>
+            <p>
+                <i class="fas fa-wallet"></i> Balance: 
+                <span id="balance">0.00000000</span>USDC
+            </p>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html" class="active"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a href="profile.html"><i class="fas fa-user"></i> Perfil</a></li>
+                <li><a href="store.html"><i class="fas fa-store"></i> Store</a></li>
+                <li><a href="tasks.html"><i class="fas fa-tasks"></i> Tasks</a></li>
+                <li><a href="games.html"><i class="fas fa-gamepad"></i> Jugar y Ganar</a></li>
+                <li><a href="referidos.html"><i class="fas fa-users"></i> Referidos</a></li>
+                <li><a href="historial.html"><i class="fas fa-history"></i> Historial de transacciones</a></li>
+                <li><a href="withdrawal.html"><i class="fas fa-money-bill-wave"></i> Retirar fondos</a></li>
+                <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="mining-container">
+        <div class="mining-stats">
+            <div class="stat-card">
+                <i class="fas fa-coins"></i>
+                <p>Total minado: <span id="totalMined">0.00000000</span> USDC</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-clock"></i>
+                <p>Tasa de minería: <span id="ratePerHour">0.00002500</span> USDC/hora</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-hourglass-half"></i>
+                <p>Tasa de minería: <span id="ratePerMinute">0.0000004167</span> USDC/minuto</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-hourglass-start"></i>
+                <p>Tasa de minería: <span id="ratePerSecond">0.0000000694</span> USDC/segundo</p>
+            </div>
+        </div>
+        <button id="mineButton"><i class="fas fa-hammer"></i> Minar</button>
+    </div>
+
+    <div id="notificationContainer"></div>
+
+    <!-- Cargar auth.js primero -->
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Asegurar que el enlace de juegos funcione correctamente
+            const gamesLink = document.getElementById('gamesLink');
+            if (gamesLink) {
+                gamesLink.addEventListener('click', function(e) {
+                    // Guardar en localStorage que este enlace fue el último clickeado
+                    localStorage.setItem('lastActiveLink', 'games');
+                    
+                    // Remover la clase active de todos los enlaces
+                    const navLinks = document.querySelectorAll('.sidebar nav ul li a');
+                    navLinks.forEach(link => link.classList.remove('active'));
+                    
+                    // Añadir la clase active al enlace de juegos
+                    this.classList.add('active');
+                });
+            }
+            
+            // Añadir evento de clic para el enlace de referidos
+            const referidosLink = document.querySelector('.sidebar nav ul li a[href="referidos.html"]');
+            if (referidosLink) {
+                referidosLink.addEventListener('click', function(e) {
+                    // Guardar en localStorage que este enlace fue el último clickeado
+                    localStorage.setItem('lastActiveLink', 'referidos');
+                    
+                    // Remover la clase active de todos los enlaces
+                    const navLinks = document.querySelectorAll('.sidebar nav ul li a');
+                    navLinks.forEach(link => link.classList.remove('active'));
+                    
+                    // Añadir la clase active al enlace de referidos
+                    this.classList.add('active');
+                });
+            }
+            
+            // Activar el enlace correspondiente a la página actual
+            const currentPage = window.location.pathname.split('/').pop();
+            if (currentPage === 'index.html' || currentPage === '') {
+                const homeLink = document.querySelector('.sidebar nav ul li a[href="index.html"]');
+                if (homeLink) homeLink.classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>

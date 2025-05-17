@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetris Mejorado</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ff5733;
+            --secondary-color: #1e88e5;
+            --accent-color: #00c853;
+            --text-color: #e0e0e0;
+            --background-color: #0a0a1a;
+            --white: #ffffff;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .balance-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 30px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .balance {
+            font-size: 24px;
+            color: var(--accent-color);
+            margin-top: 10px;
+            text-shadow: 0 0 10px rgba(0, 200, 83, 0.3);
+        }
+        
+        .game-container {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .tetris-container {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            flex: 1;
+        }
+        
+        .game-board {
+            border: 3px solid var(--primary-color);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 0 20px rgba(255, 87, 51, 0.3);
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .game-info {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            width: 300px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .info-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .info-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(255, 87, 51, 0.3);
+        }
+        
+        .next-piece-preview {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .score-display {
+            font-size: 28px;
+            color: var(--accent-color);
+            text-shadow: 0 0 10px rgba(0, 200, 83, 0.3);
+            margin: 10px 0;
+        }
+        
+        .game-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, var(--primary-color), #ff7043);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 87, 51, 0.3);
+            margin: 0 5px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 87, 51, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .touch-controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px auto;
+            width: 100%;
+            max-width: 300px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .touch-btn {
+            background: linear-gradient(135deg, var(--secondary-color), #2196f3);
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 24px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(30, 136, 229, 0.3);
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 60px;
+        }
+
+        .touch-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 8px rgba(30, 136, 229, 0.2);
+            background: linear-gradient(135deg, #1976d2, #1e88e5);
+        }
+
+        #left-btn {
+            grid-column: 1;
+            grid-row: 2;
+        }
+
+        #rotate-btn {
+            grid-column: 2;
+            grid-row: 1;
+        }
+
+        #right-btn {
+            grid-column: 3;
+            grid-row: 2;
+        }
+
+        #down-btn {
+            grid-column: 2;
+            grid-row: 2;
+        }
+
+        #space-btn {
+            grid-column: 1 / span 3;
+            grid-row: 3;
+            background: linear-gradient(135deg, var(--accent-color), #00e676);
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #space-btn:active {
+            background: linear-gradient(135deg, #00c853, #00e676);
+        }
+
+        @media (max-width: 768px) {
+            .touch-controls {
+                display: grid;
+            }
+            
+            .game-container {
+                flex-direction: column;
+                padding: 15px;
+                gap: 20px;
+            }
+            
+            .tetris-container {
+                padding: 15px;
+                width: 100%;
+            }
+            
+            .game-info {
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .touch-controls {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="balance-container">
+        <h3>Tu Balance</h3>
+        <div class="balance">
+            <span id="balance">0.00000000</span> USDC
+        </div>
+    </div>
+
+    <div class="game-container">
+        <div class="tetris-container">
+            <div class="game-board">
+                <canvas id="tetris-canvas"></canvas>
+            </div>
+            
+            <div class="game-buttons">
+                <button id="start-button" class="btn">Iniciar</button>
+                <button id="pause-button" class="btn">Pausar</button>
+                <button id="home-button" class="btn" onclick="window.location.href='index.html'">
+                    <i class="fas fa-home"></i> Inicio
+                </button>
+            </div>
+
+            <div class="touch-controls">
+                <button id="left-btn" class="touch-btn">←</button>
+                <button id="rotate-btn" class="touch-btn">↑</button>
+                <button id="right-btn" class="touch-btn">→</button>
+                <button id="down-btn" class="touch-btn">↓</button>
+                <button id="space-btn" class="touch-btn">Espacio</button>
+            </div>
+        </div>
+        
+        <div class="game-info">
+            <div class="info-section">
+                <h3>Siguiente Pieza</h3>
+                <div class="next-piece-preview">
+                    <canvas id="next-piece-canvas"></canvas>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <h3>Puntuación</h3>
+                <div class="score-display" id="score">0</div>
+            </div>
+            
+            <div class="info-section">
+                <h3>Nivel</h3>
+                <div class="score-display" id="level">1</div>
+            </div>
+            
+            <div class="info-section">
+                <h3>Líneas</h3>
+                <div class="score-display" id="lines">0</div>
+            </div>
+            
+            <div class="info-section">
+                <h3>Recompensa</h3>
+                <div class="score-display" id="reward">0.00000000</div>
+            </div>
+            
+            <div class="info-section">
+                <h3>Controles</h3>
+                <p>← → : Mover</p>
+                <p>↑ : Rotar</p>
+                <p>↓ : Bajar</p>
+                <p>Espacio : Caída instantánea</p>
+            </div>
+        </div>
+    </div>
+    
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <script src="auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof window.modifyBalance !== 'function') {
+                console.error('Error: auth.js no se ha cargado correctamente');
+                const notification = document.createElement('div');
+                notification.className = 'notification error';
+                notification.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error: No se puede conectar con el sistema de recompensas. Por favor, recarga la página.';
+                document.getElementById('notificationContainer').appendChild(notification);
+            }
+        });
+    </script>
+    <script src="tetris.js"></script>
+</body>
+</html> 
